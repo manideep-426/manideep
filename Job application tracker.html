@@ -1,0 +1,122 @@
+Job application Tracker 
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Job Application Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px gray;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        table, th, td {
+            border: 1px solid gray;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        .delete-btn {
+            background: red;
+            color: white;
+            border: none;
+            padding: 5px 8px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Job Application Tracker</h1>
+    <input type="text" id="company" placeholder="Company Name">
+    <input type="text" id="position" placeholder="Position">
+    <select id="status">
+        <option value="Applied">Applied</option>
+        <option value="Interview">Interview</option>
+        <option value="Offer">Offer</option>
+        <option value="Rejected">Rejected</option>
+    </select>
+    <button onclick="addJob()">Add Job</button>
+
+    <table id="jobTable">
+        <thead>
+            <tr>
+                <th>Company</th>
+                <th>Position</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Jobs will appear here -->
+        </tbody>
+    </table>
+</div>
+
+<script>
+    let jobs = JSON.parse(localStorage.getItem("jobs")) || [];
+
+    function displayJobs() {
+        const tableBody = document.querySelector("#jobTable tbody");
+        tableBody.innerHTML = "";
+        jobs.forEach((job, index) => {
+            const row = `<tr>
+                <td>${job.company}</td>
+                <td>${job.position}</td>
+                <td>${job.status}</td>
+                <td><button class="delete-btn" onclick="deleteJob(${index})">Delete</button></td>
+            </tr>`;
+            tableBody.innerHTML += row;
+        });
+    }
+
+    function addJob() {
+        const company = document.getElementById("company").value;
+        const position = document.getElementById("position").value;
+        const status = document.getElementById("status").value;
+
+        if (company && position) {
+            jobs.push({ company, position, status });
+            localStorage.setItem("jobs", JSON.stringify(jobs));
+            displayJobs();
+            document.getElementById("company").value = "";
+            document.getElementById("position").value = "";
+        } else {
+            alert("Please enter company and position");
+        }
+    }
+
+    function deleteJob(index) {
+        jobs.splice(index, 1);
+        localStorage.setItem("jobs", JSON.stringify(jobs));
+        displayJobs();
+    }
+
+    // Display jobs when page loads
+    displayJobs();
+</script>
+
+</body>
+</html>
